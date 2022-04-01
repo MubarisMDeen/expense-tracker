@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import './widgets/transactions.dart';
-
+import '../models/transaction.dart';
+import './widgets/transactions_list.dart';
+import './widgets/new_transaction.dart';
 
 void main() {
   runApp(MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   @override
@@ -22,15 +22,53 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class MyHomePage extends StatefulWidget {
 
-class MyHomePage extends StatelessWidget {
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
 
+class _MyHomePageState extends State<MyHomePage> {
+
+  final List<Transaction> transactions = [
+    Transaction(id: 'aa', title: 'Biriyani', amount: 100, date: DateTime.now()),
+    Transaction(id: 'ab', title: 'Soda', amount: 120, date: DateTime.now())
+  ];
+
+  void addTransaction(String newTitle, double newAmount) {
+    setState(() {
+      transactions.add(
+        Transaction(
+          title: newTitle,
+          amount: newAmount,
+          date: DateTime.now(),
+          id: DateTime.now().toString(),
+        ),
+      );
+    });
+  }
+
+
+  void showNewTransaction(){
+
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Expense Tracker'),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.add,
+              size: 30,
+            ),
+            onPressed: () {
+
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -45,10 +83,18 @@ class MyHomePage extends StatelessWidget {
                 ),
               ),
             ),
-            Transactions(),
+            NewTransaction(addTransaction),
+            TransactionsList(transactions),
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {
+
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
