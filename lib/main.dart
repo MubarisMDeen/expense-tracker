@@ -15,24 +15,22 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Expense Tracker',
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-      ),
+          colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.deepPurple)
+              .copyWith(secondary: Colors.orange)),
       home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   final List<Transaction> transactions = [
     Transaction(id: 'aa', title: 'Biriyani', amount: 100, date: DateTime.now()),
-    Transaction(id: 'ab', title: 'Soda', amount: 120, date: DateTime.now())
+    Transaction(id: 'ab', title: 'Soda', amount: 20, date: DateTime.now())
   ];
 
   void addTransaction(String newTitle, double newAmount) {
@@ -48,9 +46,12 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-
-  void showNewTransaction(){
-
+  void showNewTransaction(BuildContext ctx) {
+    showModalBottomSheet(
+        context: ctx,
+        builder: (_) {
+          return NewTransaction(addTransaction);
+        });
   }
 
   @override
@@ -65,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
               size: 30,
             ),
             onPressed: () {
-
+              showNewTransaction(context);
             },
           ),
         ],
@@ -83,7 +84,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ),
-            NewTransaction(addTransaction),
             TransactionsList(transactions),
           ],
         ),
@@ -91,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-
+          showNewTransaction(context);
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
