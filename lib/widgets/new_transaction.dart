@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class NewTransaction extends StatefulWidget {
   final Function addTransaction;
 
-  NewTransaction(this.addTransaction);
+  const NewTransaction(this.addTransaction);
 
   @override
   State<NewTransaction> createState() => _NewTransactionState();
@@ -56,11 +56,12 @@ class _NewTransactionState extends State<NewTransaction> {
                   onSubmit();
                 },
               ),
+              SizedBox(height: 13),
               TextButton(
                 onPressed: onSubmit,
-                child: const Text(
+                child: Text(
                   'Add Transaction',
-                  style: TextStyle(color: Colors.deepOrange),
+                  style: Theme.of(context).textTheme.caption?.copyWith(color: Theme.of(context).colorScheme.secondary,fontSize: 18),
                 ),
               ),
             ],
