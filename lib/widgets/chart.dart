@@ -4,8 +4,9 @@ import 'package:intl/intl.dart';
 import '../models/transaction.dart';
 
 class Chart extends StatelessWidget {
-  List<Transaction> transactions;
-  Chart(this.transactions);
+  final List<Transaction> transactions;
+
+  const Chart(this.transactions, {Key? key}) : super(key: key);
 
   List<Transaction> get recentTransactions {
     return transactions.where((tx) {
@@ -30,7 +31,7 @@ class Chart extends StatelessWidget {
         'day': DateFormat.E().format(weekDay).substring(0, 1),
         'amount': sum
       };
-    });
+    }).reversed.toList();
   }
 
   double get maxSpending {
@@ -41,44 +42,60 @@ class Chart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(groupedTransactions);
     return Container(
+      margin: const EdgeInsets.all(10),
       width: double.infinity,
       child: Card(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            ...groupedTransactions.map((e) {
-              return Column(
-                children: [
-                  Text('\$${(e['amount'] as double).toStringAsFixed(0)}'),
-                  Container(
-                    height: 100,
-                    width: 12,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Color.fromRGBO(220, 220, 220, 1),
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: FractionallySizedBox(
-                      heightFactor: maxSpending==0? 0 : (e['amount'] as double) / maxSpending,
-                      widthFactor: 1,
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary,
-                          borderRadius: BorderRadius.circular(10),
+        elevation: 5,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              ...groupedTransactions.map((e) {
+                return Flexible(
+                  fit: FlexFit.tight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(3),
+                    child: Column(
+                      children: [
+                        Container(height: 20,
+                          child: FittedBox(
+                              child: Text(
+                                  '\$${(e['amount'] as double).toStringAsFixed(0)}')),
                         ),
-                      ),
+                        Container(
+                          height: 100,
+                          width: 12,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: const Color.fromRGBO(220, 220, 220, 1),
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: FractionallySizedBox(
+                            heightFactor: maxSpending == 0
+                                ? 0
+                                : (e['amount'] as double) / maxSpending,
+                            widthFactor: 1,
+                            alignment: Alignment.bottomCenter,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primary,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Text(e['day'].toString()),
+                      ],
                     ),
                   ),
-                  Text(e['day'].toString()),
-                ],
-              );
-            }).toList(),
-            //    Text(groupedTransactions.toString()),
-          ],
+                );
+              }).toList(),
+              //    Text(groupedTransactions.toString()),
+            ],
+          ),
         ),
       ),
     );

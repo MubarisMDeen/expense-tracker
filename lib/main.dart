@@ -6,10 +6,12 @@ import './widgets/chart.dart';
 import './widgets/new_transaction.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,12 +21,14 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.deepPurple)
             .copyWith(secondary: Colors.orange),
         fontFamily: 'Quicksand',
-        textTheme: const TextTheme(
-            caption: TextStyle(
+        textTheme: TextTheme(
+            caption: const TextStyle(
                 fontFamily: 'OpenSans',
                 fontWeight: FontWeight.bold,
                 fontSize: 15,
-                color: Colors.black)),
+                color: Colors.black),
+        button: const TextStyle().copyWith(color: Colors.white )),
+
         appBarTheme: const AppBarTheme(
           titleTextStyle: TextStyle(
               fontFamily: 'OpenSans',
@@ -32,12 +36,14 @@ class MyApp extends StatelessWidget {
               fontSize: 18),
         ),
       ),
-      home: MyHomePage(),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key}) : super(key: key);
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -47,16 +53,22 @@ class _MyHomePageState extends State<MyHomePage> {
 
   ];
 
-  void addTransaction(String newTitle, double newAmount) {
+  void addTransaction(String newTitle, double newAmount, DateTime chosenDate) {
     setState(() {
       transactions.add(
         Transaction(
           title: newTitle,
           amount: newAmount,
-          date: DateTime.now(),
+          date: chosenDate,
           id: DateTime.now().toString(),
         ),
       );
+    });
+  }
+
+  void deleteTransaction(String id) {
+    setState(() {
+      transactions.removeWhere((tx) => tx.id==id);
     });
   }
 
@@ -85,16 +97,14 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
+      body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Chart(transactions),
-            TransactionsList(transactions),
+            TransactionsList(transactions,deleteTransaction),
           ],
         ),
-      ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
